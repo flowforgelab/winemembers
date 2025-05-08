@@ -1,0 +1,23 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" class="wine-logo">
+    <!-- Wine Glass Bowl (slightly more elegant curve) -->
+    <path class="wine-glass" d="M60 90c12 0 22-10 22-24 0-16-16-30-22-44-6 14-22 28-22 44 0 14 10 24 22 24z" fill="none" stroke="#8B1E3F" stroke-width="3"/>
+    
+    <!-- Wine Glass Stem (slimmer and more refined) -->
+    <line x1="60" y1="90" x2="60" y2="108" stroke="#8B1E3F" stroke-width="3" class="wine-stem"/>
+    <line x1="48" y1="112" x2="72" y2="112" stroke="#8B1E3F" stroke-width="3" class="wine-stem"/>
+    
+    <!-- AI Circuit Nodes (slightly larger for visibility) -->
+    <circle cx="32" cy="32" r="5" fill="#00A3E0" class="ai-node"/>
+    <circle cx="88" cy="32" r="5" fill="#00A3E0" class="ai-node"/>
+    <circle cx="60" cy="18" r="5" fill="#00A3E0" class="ai-node"/>
+    
+    <!-- AI Circuit Lines (more dynamic connections) -->
+    <line x1="32" y1="32" x2="60" y2="18" stroke="#00A3E0" stroke-width="2" class="ai-circuit"/>
+    <line x1="88" y1="32" x2="60" y2="18" stroke="#00A3E0" stroke-width="2" class="ai-circuit"/>
+    <line x1="32" y1="32" x2="40" y2="50" stroke="#00A3E0" stroke-width="2" class="ai-circuit"/>
+    <line x1="88" y1="32" x2="80" y2="50" stroke="#00A3E0" stroke-width="2" class="ai-circuit"/>
+    
+    <!-- Additional Circuit Accents (for a tech feel) -->
+    <circle cx="40" cy="50" r="3" fill="#00A3E0" class="ai-node"/>
+    <circle cx="80" cy="50" r="3" fill="#00A3E0" class="ai-node"/>
+</svg> 
