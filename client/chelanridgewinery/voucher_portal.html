@@ -223,8 +223,9 @@
     </div>
 
     <script>
-        // Configuration - Update this URL with your actual n8n webhook endpoint
+        // Configuration
         const WEBHOOK_URL = 'https://n8n.flowforgelab.com/webhook/voucher-validation';
+        const CLIENT_ID = 'chelan_ridge_winery';
         
         const form = document.getElementById('voucherForm');
         const voucherInput = document.getElementById('voucherCode');
@@ -253,6 +254,7 @@
                     },
                     body: JSON.stringify({
                         voucher_code: voucherCode,
+                        client_id: CLIENT_ID,
                         timestamp: new Date().toISOString(),
                         source: 'staff_portal'
                     })
