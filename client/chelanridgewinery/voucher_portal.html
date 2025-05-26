@@ -232,16 +232,23 @@
         const CLIENT_ID = 'chelan_ridge_winery';
         
         const form = document.getElementById('voucherForm');
+        const validateBtn = document.getElementById('validateBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        
+        const form = document.getElementById('voucherForm');
         const voucherInput = document.getElementById('voucherCode');
         const validateBtn = document.getElementById('validateBtn');
         const loading = document.getElementById('loading');
         const result = document.getElementById('result');
 
         form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent form submission and page refresh
             
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
             const voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
+            
+            console.log('Form submitted with:', { phoneNumber, voucherCode }); // Debug log
             
             if (!phoneNumber) {
                 showError('Please enter the customer phone number');
@@ -261,30 +268,39 @@
                 return;
             }
 
+            console.log('Making API request to:', WEBHOOK_URL); // Debug log
+
             // Show loading state
             setLoading(true);
             
             try {
+                const requestData = {
+                    phone_number: normalizedPhone,
+                    phone_number_formatted: phoneNumber,
+                    voucher_code: voucherCode,
+                    client_id: CLIENT_ID,
+                    timestamp: new Date().toISOString(),
+                    source: 'staff_portal'
+                };
+                
+                console.log('Request data:', requestData); // Debug log
+                
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        phone_number: normalizedPhone,
-                        phone_number_formatted: phoneNumber, // Keep original for display
-                        voucher_code: voucherCode,
-                        client_id: CLIENT_ID,
-                        timestamp: new Date().toISOString(),
-                        source: 'staff_portal'
-                    })
+                    body: JSON.stringify(requestData)
                 });
 
+                console.log('Response status:', response.status); // Debug log
+
                 if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
+                    throw new Error(`Server error: ${response.status} - ${response.statusText}`);
                 }
 
                 const data = await response.json();
+                console.log('Response data:', data); // Debug log
                 
                 if (data.success) {
                     showSuccess(data);
@@ -294,7 +310,7 @@
                 
             } catch (error) {
                 console.error('Validation error:', error);
-                showError('Unable to validate voucher. Please check your connection and try again.');
+                showError(`Unable to validate voucher: ${error.message}. Please check your connection and try again.`);
             } finally {
                 setLoading(false);
             }
