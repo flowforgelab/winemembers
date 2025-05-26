@@ -253,6 +253,14 @@
                 return;
             }
 
+            // Normalize phone number for consistent searching
+            const normalizedPhone = normalizePhoneNumber(phoneNumber);
+            
+            if (normalizedPhone.length < 10) {
+                showError('Please enter a valid 10-digit phone number');
+                return;
+            }
+
             // Show loading state
             setLoading(true);
             
@@ -263,7 +271,8 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        phone_number: phoneNumber,
+                        phone_number: normalizedPhone,
+                        phone_number_formatted: phoneNumber, // Keep original for display
                         voucher_code: voucherCode,
                         client_id: CLIENT_ID,
                         timestamp: new Date().toISOString(),
@@ -340,15 +349,46 @@
             voucherInput.focus();
         }
 
+        // Auto-uppercase voucher codes as user types
+        voucherInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
         // Auto-focus on phone input when page loads
         window.addEventListener('load', function() {
             document.getElementById('phoneNumber').focus();
         });
 
-        // Auto-uppercase voucher codes as user types
-        voucherInput.addEventListener('input', function(e) {
-            e.target.value = e.target.value.toUpperCase();
+        // Phone number formatting and normalization
+        const phoneInput = document.getElementById('phoneNumber');
+        
+        // Auto-format phone as user types
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            
+            if (value.length >= 6) {
+                value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+            } else if (value.length >= 3) {
+                value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+            }
+            
+            e.target.value = value;
         });
+
+        // Normalize phone number for API call
+        function normalizePhoneNumber(phone) {
+            // Remove all non-digit characters
+            const digitsOnly = phone.replace(/\D/g, '');
+            
+            // Handle different formats
+            if (digitsOnly.length === 10) {
+                return digitsOnly; // 2068325175
+            } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
+                return digitsOnly.substring(1); // Remove leading 1
+            }
+            
+            return digitsOnly; // Return as-is for other formats
+        }
     </script>
 </body>
 </html>
