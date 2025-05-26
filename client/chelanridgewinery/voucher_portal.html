@@ -204,6 +204,10 @@
         
         <form id="voucherForm">
             <div class="form-group">
+                <label for="phoneNumber">Customer Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(555) 123-4567" required>
+            </div>
+            <div class="form-group">
                 <label for="voucherCode">Enter Voucher Code:</label>
                 <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
             </div>
@@ -223,8 +227,8 @@
     </div>
 
     <script>
-        // Configuration
-        const WEBHOOK_URL = 'https://n8n.flowforgelab.com/webhook/voucher-validation';
+        // Configuration - UPDATE THIS WITH YOUR ACTUAL N8N WEBHOOK URL
+        const WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/voucher-validation';
         const CLIENT_ID = 'chelan_ridge_winery';
         
         const form = document.getElementById('voucherForm');
@@ -236,7 +240,13 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const voucherCode = voucherInput.value.trim().toUpperCase();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
+            
+            if (!phoneNumber) {
+                showError('Please enter the customer phone number');
+                return;
+            }
             
             if (!voucherCode) {
                 showError('Please enter a voucher code');
@@ -253,6 +263,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        phone_number: phoneNumber,
                         voucher_code: voucherCode,
                         client_id: CLIENT_ID,
                         timestamp: new Date().toISOString(),
@@ -329,9 +340,9 @@
             voucherInput.focus();
         }
 
-        // Auto-focus on voucher input when page loads
+        // Auto-focus on phone input when page loads
         window.addEventListener('load', function() {
-            voucherInput.focus();
+            document.getElementById('phoneNumber').focus();
         });
 
         // Auto-uppercase voucher codes as user types
