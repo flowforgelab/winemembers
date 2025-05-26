@@ -277,16 +277,29 @@
             result.style.display = 'block';
         }
         
-        function showError(message, details) {
+        // Add this to replace the existing showError function in your HTML file
+
+        function showError(message, details, errorData) {
             var result = document.getElementById('result');
             result.className = 'result error';
-            result.innerHTML = '<h3>❌ Validation Failed</h3>' +
-                '<p>' + message + '</p>' +
-                (details ? '<div class="error-details">' + details + '</div>' : '') +
-                '<button class="reset-btn" onclick="resetForm()">Try Another Code</button>';
+            
+            // Check if this is an "already used" voucher
+            if (errorData && errorData.errorType === 'already_used') {
+                result.innerHTML = '<h3>❌ Voucher Already Redeemed</h3>' +
+                    '<p><strong>This voucher has already been used and cannot be redeemed again.</strong></p>' +
+                    (details ? '<div class="error-details"><strong>Redemption Details:</strong><br>' + details + '</div>' : '') +
+                    '<button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>';
+            } else {
+                // Standard error display for other error types
+                result.innerHTML = '<h3>❌ Validation Failed</h3>' +
+                    '<p>' + message + '</p>' +
+                    (details ? '<div class="error-details">' + details + '</div>' : '') +
+                    '<button class="reset-btn" onclick="resetForm()">Try Another Code</button>';
+            }
+            
             result.style.display = 'block';
         }
-        
+
         function resetForm() {
             document.getElementById('phoneNumber').value = '';
             document.getElementById('voucherCode').value = '';
@@ -294,6 +307,9 @@
             document.getElementById('phoneNumber').focus();
         }
         
+        // Updated validateVoucher function - only the response handling part needs to change
+        // Replace the existing response handling in your validateVoucher function with this:
+
         function validateVoucher() {
             console.log('Button clicked!');
             
@@ -333,7 +349,6 @@
             
             console.log('Request data:', requestData);
             
-            // Use XMLHttpRequest for better browser compatibility
             var xhr = new XMLHttpRequest();
             xhr.open('POST', WEBHOOK_URL, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -351,7 +366,8 @@
                         if (data.success) {
                             showSuccess(data);
                         } else {
-                            showError(data.message || 'Voucher validation failed', data.details);
+                            // Pass the full error data to showError for proper handling
+                            showError(data.message || 'Voucher validation failed', data.details, data);
                         }
                     } catch (e) {
                         console.error('JSON parse error:', e);
