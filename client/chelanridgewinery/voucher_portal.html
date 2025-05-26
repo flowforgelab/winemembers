@@ -202,7 +202,7 @@
         <div class="logo">🍷 Chelan Ridge Winery</div>
         <div class="subtitle">Staff Voucher Validation Portal</div>
         
-        <form id="voucherForm">
+        <form id="voucherForm" onsubmit="return false;">
             <div class="form-group">
                 <label for="phoneNumber">Customer Phone Number:</label>
                 <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(555) 123-4567" required>
@@ -211,7 +211,7 @@
                 <label for="voucherCode">Enter Voucher Code:</label>
                 <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
             </div>
-            <button type="submit" class="btn" id="validateBtn">
+            <button type="button" class="btn" id="validateBtn">
                 Validate Voucher
             </button>
         </form>
@@ -242,13 +242,14 @@
         const loading = document.getElementById('loading');
         const result = document.getElementById('result');
 
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Prevent form submission and page refresh
+        // Add click event listener to button instead of form submit
+        validateBtn.addEventListener('click', async function(e) {
+            e.preventDefault(); // Prevent any default behavior
             
             const phoneNumber = document.getElementById('phoneNumber').value.trim();
             const voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
             
-            console.log('Form submitted with:', { phoneNumber, voucherCode }); // Debug log
+            console.log('Button clicked with:', { phoneNumber, voucherCode }); // Debug log
             
             if (!phoneNumber) {
                 showError('Please enter the customer phone number');
@@ -314,6 +315,13 @@
             } finally {
                 setLoading(false);
             }
+        });
+
+        // Also keep the form submit event as backup
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submit prevented - using button click instead');
+            return false;
         });
 
         function setLoading(isLoading) {
