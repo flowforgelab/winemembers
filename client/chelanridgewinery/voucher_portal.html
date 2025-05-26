@@ -59,18 +59,16 @@
             font-size: 14px;
         }
 
-        input[type="text"] {
+        input[type="tel"], input[type="text"] {
             width: 100%;
             padding: 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        input[type="text"]:focus {
+        input[type="tel"]:focus, input[type="text"]:focus {
             outline: none;
             border-color: #8B0000;
             box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
@@ -202,19 +200,17 @@
         <div class="logo">🍷 Chelan Ridge Winery</div>
         <div class="subtitle">Staff Voucher Validation Portal</div>
         
-        <form id="voucherForm" onsubmit="return false;">
-            <div class="form-group">
-                <label for="phoneNumber">Customer Phone Number:</label>
-                <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(555) 123-4567" required>
-            </div>
-            <div class="form-group">
-                <label for="voucherCode">Enter Voucher Code:</label>
-                <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
-            </div>
-            <button type="button" class="btn" id="validateBtn">
-                Validate Voucher
-            </button>
-        </form>
+        <div class="form-group">
+            <label for="phoneNumber">Customer Phone Number:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(555) 123-4567" required>
+        </div>
+        <div class="form-group">
+            <label for="voucherCode">Enter Voucher Code:</label>
+            <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
+        </div>
+        <button type="button" class="btn" id="validateBtn" onclick="validateVoucher()">
+            Validate Voucher
+        </button>
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
@@ -228,103 +224,31 @@
 
     <script>
         // Configuration - UPDATE THIS WITH YOUR ACTUAL N8N WEBHOOK URL
-        const WEBHOOK_URL = 'https://n8n.flowforgelab.com/webhook/voucher-validation';
-        const CLIENT_ID = 'chelan_ridge_winery';
+        var WEBHOOK_URL = 'https://n8n.flowforgelab.com/webhook/voucher-validation';
+        var CLIENT_ID = 'chelan_ridge_winery';
         
-        const form = document.getElementById('voucherForm');
-        const validateBtn = document.getElementById('validateBtn');
-        const loading = document.getElementById('loading');
-        const result = document.getElementById('result');
+        console.log('JavaScript loaded');
         
-        const form = document.getElementById('voucherForm');
-        const voucherInput = document.getElementById('voucherCode');
-        const validateBtn = document.getElementById('validateBtn');
-        const loading = document.getElementById('loading');
-        const result = document.getElementById('result');
-
-        // Add click event listener to button instead of form submit
-        validateBtn.addEventListener('click', async function(e) {
-            e.preventDefault(); // Prevent any default behavior
+        // Phone number formatting and normalization
+        function normalizePhoneNumber(phone) {
+            // Remove all non-digit characters
+            var digitsOnly = phone.replace(/\D/g, '');
             
-            const phoneNumber = document.getElementById('phoneNumber').value.trim();
-            const voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
-            
-            console.log('Button clicked with:', { phoneNumber, voucherCode }); // Debug log
-            
-            if (!phoneNumber) {
-                showError('Please enter the customer phone number');
-                return;
+            // Handle different formats
+            if (digitsOnly.length === 10) {
+                return digitsOnly; // 2068325175
+            } else if (digitsOnly.length === 11 && digitsOnly.charAt(0) === '1') {
+                return digitsOnly.substring(1); // Remove leading 1
             }
             
-            if (!voucherCode) {
-                showError('Please enter a voucher code');
-                return;
-            }
-
-            // Normalize phone number for consistent searching
-            const normalizedPhone = normalizePhoneNumber(phoneNumber);
-            
-            if (normalizedPhone.length < 10) {
-                showError('Please enter a valid 10-digit phone number');
-                return;
-            }
-
-            console.log('Making API request to:', WEBHOOK_URL); // Debug log
-
-            // Show loading state
-            setLoading(true);
-            
-            try {
-                const requestData = {
-                    phone_number: normalizedPhone,
-                    phone_number_formatted: phoneNumber,
-                    voucher_code: voucherCode,
-                    client_id: CLIENT_ID,
-                    timestamp: new Date().toISOString(),
-                    source: 'staff_portal'
-                };
-                
-                console.log('Request data:', requestData); // Debug log
-                
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(requestData)
-                });
-
-                console.log('Response status:', response.status); // Debug log
-
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status} - ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                console.log('Response data:', data); // Debug log
-                
-                if (data.success) {
-                    showSuccess(data);
-                } else {
-                    showError(data.message || 'Voucher validation failed', data.details);
-                }
-                
-            } catch (error) {
-                console.error('Validation error:', error);
-                showError(`Unable to validate voucher: ${error.message}. Please check your connection and try again.`);
-            } finally {
-                setLoading(false);
-            }
-        });
-
-        // Also keep the form submit event as backup
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submit prevented - using button click instead');
-            return false;
-        });
-
+            return digitsOnly; // Return as-is for other formats
+        }
+        
         function setLoading(isLoading) {
+            var validateBtn = document.getElementById('validateBtn');
+            var loading = document.getElementById('loading');
+            var result = document.getElementById('result');
+            
             validateBtn.disabled = isLoading;
             loading.style.display = isLoading ? 'flex' : 'none';
             result.style.display = 'none';
@@ -335,84 +259,141 @@
                 validateBtn.textContent = 'Validate Voucher';
             }
         }
-
+        
         function showSuccess(data) {
+            var result = document.getElementById('result');
             result.className = 'result success';
-            result.innerHTML = `
-                <h3>✅ Voucher Valid!</h3>
-                <div class="customer-info">
-                    <h3>Customer Information:</h3>
-                    <p><strong>Name:</strong> ${data.customer.name || 'Not provided'}</p>
-                    <p><strong>Email:</strong> ${data.customer.email || 'Not provided'}</p>
-                    <p><strong>Phone:</strong> ${data.customer.phone || 'Not provided'}</p>
-                    <p><strong>Voucher Value:</strong> ${data.voucher.value || 'Not specified'}</p>
-                    <p><strong>Issued:</strong> ${data.voucher.sent_date || 'Unknown'}</p>
-                </div>
-                <p style="margin-top: 15px; font-size: 14px;">
-                    ✅ Voucher has been marked as redeemed
-                </p>
-                <button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>
-            `;
+            result.innerHTML = '<h3>✅ Voucher Valid!</h3>' +
+                '<div class="customer-info">' +
+                '<h3>Customer Information:</h3>' +
+                '<p><strong>Name:</strong> ' + (data.customer && data.customer.name ? data.customer.name : 'Not provided') + '</p>' +
+                '<p><strong>Email:</strong> ' + (data.customer && data.customer.email ? data.customer.email : 'Not provided') + '</p>' +
+                '<p><strong>Phone:</strong> ' + (data.customer && data.customer.phone ? data.customer.phone : 'Not provided') + '</p>' +
+                '<p><strong>Voucher Value:</strong> ' + (data.voucher && data.voucher.value ? data.voucher.value : 'Not specified') + '</p>' +
+                '<p><strong>Issued:</strong> ' + (data.voucher && data.voucher.sent_date ? data.voucher.sent_date : 'Unknown') + '</p>' +
+                '</div>' +
+                '<p style="margin-top: 15px; font-size: 14px;">✅ Voucher has been marked as redeemed</p>' +
+                '<button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>';
             result.style.display = 'block';
         }
-
+        
         function showError(message, details) {
+            var result = document.getElementById('result');
             result.className = 'result error';
-            result.innerHTML = `
-                <h3>❌ Validation Failed</h3>
-                <p>${message}</p>
-                ${details ? `<div class="error-details">${details}</div>` : ''}
-                <button class="reset-btn" onclick="resetForm()">Try Another Code</button>
-            `;
+            result.innerHTML = '<h3>❌ Validation Failed</h3>' +
+                '<p>' + message + '</p>' +
+                (details ? '<div class="error-details">' + details + '</div>' : '') +
+                '<button class="reset-btn" onclick="resetForm()">Try Another Code</button>';
             result.style.display = 'block';
         }
-
+        
         function resetForm() {
-            form.reset();
-            result.style.display = 'none';
-            voucherInput.focus();
-        }
-
-        // Auto-uppercase voucher codes as user types
-        voucherInput.addEventListener('input', function(e) {
-            e.target.value = e.target.value.toUpperCase();
-        });
-
-        // Auto-focus on phone input when page loads
-        window.addEventListener('load', function() {
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('voucherCode').value = '';
+            document.getElementById('result').style.display = 'none';
             document.getElementById('phoneNumber').focus();
-        });
-
-        // Phone number formatting and normalization
-        const phoneInput = document.getElementById('phoneNumber');
+        }
+        
+        function validateVoucher() {
+            console.log('Button clicked!');
+            
+            var phoneNumber = document.getElementById('phoneNumber').value.trim();
+            var voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
+            
+            console.log('Phone:', phoneNumber, 'Voucher:', voucherCode);
+            
+            if (!phoneNumber) {
+                showError('Please enter the customer phone number');
+                return;
+            }
+            
+            if (!voucherCode) {
+                showError('Please enter a voucher code');
+                return;
+            }
+            
+            var normalizedPhone = normalizePhoneNumber(phoneNumber);
+            
+            if (normalizedPhone.length < 10) {
+                showError('Please enter a valid 10-digit phone number');
+                return;
+            }
+            
+            console.log('Making API request to:', WEBHOOK_URL);
+            setLoading(true);
+            
+            var requestData = {
+                phone_number: normalizedPhone,
+                phone_number_formatted: phoneNumber,
+                voucher_code: voucherCode,
+                client_id: CLIENT_ID,
+                timestamp: new Date().toISOString(),
+                source: 'staff_portal'
+            };
+            
+            console.log('Request data:', requestData);
+            
+            // Use XMLHttpRequest for better browser compatibility
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', WEBHOOK_URL, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onload = function() {
+                setLoading(false);
+                console.log('Response status:', xhr.status);
+                console.log('Response text:', xhr.responseText);
+                
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        console.log('Parsed response:', data);
+                        
+                        if (data.success) {
+                            showSuccess(data);
+                        } else {
+                            showError(data.message || 'Voucher validation failed', data.details);
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        showError('Invalid response from server');
+                    }
+                } else {
+                    showError('Server error: ' + xhr.status + ' - ' + xhr.statusText);
+                }
+            };
+            
+            xhr.onerror = function() {
+                setLoading(false);
+                console.error('Network error');
+                showError('Network error. Please check your connection and try again.');
+            };
+            
+            xhr.send(JSON.stringify(requestData));
+        }
         
         // Auto-format phone as user types
-        phoneInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        document.addEventListener('DOMContentLoaded', function() {
+            var phoneInput = document.getElementById('phoneNumber');
+            var voucherInput = document.getElementById('voucherCode');
             
-            if (value.length >= 6) {
-                value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-            } else if (value.length >= 3) {
-                value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
-            }
+            phoneInput.addEventListener('input', function(e) {
+                var value = e.target.value.replace(/\D/g, '');
+                
+                if (value.length >= 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                } else if (value.length >= 3) {
+                    value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+                }
+                
+                e.target.value = value;
+            });
             
-            e.target.value = value;
+            voucherInput.addEventListener('input', function(e) {
+                e.target.value = e.target.value.toUpperCase();
+            });
+            
+            phoneInput.focus();
         });
-
-        // Normalize phone number for API call
-        function normalizePhoneNumber(phone) {
-            // Remove all non-digit characters
-            const digitsOnly = phone.replace(/\D/g, '');
-            
-            // Handle different formats
-            if (digitsOnly.length === 10) {
-                return digitsOnly; // 2068325175
-            } else if (digitsOnly.length === 11 && digitsOnly.startsWith('1')) {
-                return digitsOnly.substring(1); // Remove leading 1
-            }
-            
-            return digitsOnly; // Return as-is for other formats
-        }
     </script>
 </body>
 </html>
