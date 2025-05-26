@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher Validation - Chelan Ridge Winery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000 0%, #2F1B14 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            color: #8B0000;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #8B0000;
+            box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #8B0000, #A52A2A);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #8B0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: 2px solid #4CAF50;
+        }
+
+        .result.error {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            border: 2px solid #f44336;
+        }
+
+        .customer-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .customer-info h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .customer-info p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: #8B0000;
+            border: 2px solid #8B0000;
+            padding: 10px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #8B0000;
+            color: white;
+        }
+
+        .error-details {
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🍷 Chelan Ridge Winery</div>
+        <div class="subtitle">Staff Voucher Validation Portal</div>
+        
+        <form id="voucherForm">
+            <div class="form-group">
+                <label for="voucherCode">Enter Voucher Code:</label>
+                <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
+            </div>
+            <button type="submit" class="btn" id="validateBtn">
+                Validate Voucher
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span>Validating voucher...</span>
+        </div>
+
+        <div class="result" id="result">
+            <!-- Result content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Configuration - Update this URL with your actual n8n webhook endpoint
+        const WEBHOOK_URL = 'https://your-n8n-instance.com/webhook/voucher-validation';
+        
+        const form = document.getElementById('voucherForm');
+        const voucherInput = document.getElementById('voucherCode');
+        const validateBtn = document.getElementById('validateBtn');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const voucherCode = voucherInput.value.trim().toUpperCase();
+            
+            if (!voucherCode) {
+                showError('Please enter a voucher code');
+                return;
+            }
+
+            // Show loading state
+            setLoading(true);
+            
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        voucher_code: voucherCode,
+                        timestamp: new Date().toISOString(),
+                        source: 'staff_portal'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showSuccess(data);
+                } else {
+                    showError(data.message || 'Voucher validation failed', data.details);
+                }
+                
+            } catch (error) {
+                console.error('Validation error:', error);
+                showError('Unable to validate voucher. Please check your connection and try again.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function setLoading(isLoading) {
+            validateBtn.disabled = isLoading;
+            loading.style.display = isLoading ? 'flex' : 'none';
+            result.style.display = 'none';
+            
+            if (isLoading) {
+                validateBtn.textContent = 'Validating...';
+            } else {
+                validateBtn.textContent = 'Validate Voucher';
+            }
+        }
+
+        function showSuccess(data) {
+            result.className = 'result success';
+            result.innerHTML = `
+                <h3>✅ Voucher Valid!</h3>
+                <div class="customer-info">
+                    <h3>Customer Information:</h3>
+                    <p><strong>Name:</strong> ${data.customer.name || 'Not provided'}</p>
+                    <p><strong>Email:</strong> ${data.customer.email || 'Not provided'}</p>
+                    <p><strong>Phone:</strong> ${data.customer.phone || 'Not provided'}</p>
+                    <p><strong>Voucher Value:</strong> ${data.voucher.value || 'Not specified'}</p>
+                    <p><strong>Issued:</strong> ${data.voucher.sent_date || 'Unknown'}</p>
+                </div>
+                <p style="margin-top: 15px; font-size: 14px;">
+                    ✅ Voucher has been marked as redeemed
+                </p>
+                <button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>
+            `;
+            result.style.display = 'block';
+        }
+
+        function showError(message, details) {
+            result.className = 'result error';
+            result.innerHTML = `
+                <h3>❌ Validation Failed</h3>
+                <p>${message}</p>
+                ${details ? `<div class="error-details">${details}</div>` : ''}
+                <button class="reset-btn" onclick="resetForm()">Try Another Code</button>
+            `;
+            result.style.display = 'block';
+        }
+
+        function resetForm() {
+            form.reset();
+            result.style.display = 'none';
+            voucherInput.focus();
+        }
+
+        // Auto-focus on voucher input when page loads
+        window.addEventListener('load', function() {
+            voucherInput.focus();
+        });
+
+        // Auto-uppercase voucher codes as user types
+        voucherInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
