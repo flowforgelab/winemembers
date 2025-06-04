@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voucher Validation - Chelan Ridge Winery</title>
+    <title>Voucher Validation - Multi-Client Portal</title>
     <style>
+        :root {
+            --primary-color: #8B0000;
+            --secondary-color: #A52A2A;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,12 +18,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #8B0000 0%, #2F1B14 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2F1B14 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: background 0.5s ease;
         }
 
         .container {
@@ -33,17 +39,19 @@
         }
 
         .logo {
-            color: #8B0000;
+            color: var(--primary-color);
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 10px;
             letter-spacing: 1px;
+            transition: color 0.3s ease;
         }
 
         .subtitle {
             color: #666;
             margin-bottom: 40px;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .form-group {
@@ -59,7 +67,7 @@
             font-size: 14px;
         }
 
-        input[type="tel"], input[type="text"] {
+        select, input[type="tel"], input[type="text"] {
             width: 100%;
             padding: 15px;
             border: 2px solid #e0e0e0;
@@ -68,14 +76,14 @@
             transition: all 0.3s ease;
         }
 
-        input[type="tel"]:focus, input[type="text"]:focus {
+        select:focus, input[type="tel"]:focus, input[type="text"]:focus {
             outline: none;
-            border-color: #8B0000;
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
         }
 
         .btn {
-            background: linear-gradient(45deg, #8B0000, #A52A2A);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
             border: none;
             padding: 15px 40px;
@@ -113,7 +121,7 @@
             width: 20px;
             height: 20px;
             border: 2px solid #f3f3f3;
-            border-top: 2px solid #8B0000;
+            border-top: 2px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -162,8 +170,8 @@
 
         .reset-btn {
             background: transparent;
-            color: #8B0000;
-            border: 2px solid #8B0000;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
             padding: 10px 30px;
             border-radius: 8px;
             font-size: 14px;
@@ -173,7 +181,7 @@
         }
 
         .reset-btn:hover {
-            background: #8B0000;
+            background: var(--primary-color);
             color: white;
         }
 
@@ -181,6 +189,28 @@
             font-size: 14px;
             margin-top: 10px;
             opacity: 0.9;
+        }
+
+        .client-indicator {
+            background: rgba(139, 0, 0, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .url-help {
+            background: rgba(0,123,255,0.1);
+            border: 1px solid #007bff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #007bff;
+            display: none;
         }
 
         @media (max-width: 480px) {
@@ -197,17 +227,38 @@
 </head>
 <body>
     <div class="container">
-        <div class="logo">🍷 Chelan Ridge Winery</div>
-        <div class="subtitle">Staff Voucher Validation Portal</div>
+        <div class="logo">🍷 Multi-Client Voucher Portal</div>
+        <div class="subtitle">Staff Voucher Validation System</div>
+        
+        <div class="url-help" id="urlHelp">
+            <strong>💡 Pro Tip:</strong> You can bookmark direct links:<br>
+            • Chelan Ridge: <code>?client=chelan_ridge_winery</code><br>
+            • Demo Client: <code>?client=demo_client</code>
+        </div>
+        
+        <div class="form-group" id="clientSelectionGroup">
+            <label for="clientSelect">Select Client:</label>
+            <select id="clientSelect" name="clientSelect" required>
+                <option value="">-- Select a Client --</option>
+                <option value="chelan_ridge_winery">Chelan Ridge Winery</option>
+                <option value="demo_client">Demo Client</option>
+            </select>
+        </div>
+
+        <div class="client-indicator" id="clientIndicator" style="display: none;">
+            <span id="selectedClientName">No client selected</span>
+        </div>
         
         <div class="form-group">
             <label for="phoneNumber">Customer Phone Number:</label>
             <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="(555) 123-4567" required>
         </div>
+        
         <div class="form-group">
             <label for="voucherCode">Enter Voucher Code:</label>
             <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code" required>
         </div>
+        
         <button type="button" class="btn" id="validateBtn" onclick="validateVoucher()">
             Validate Voucher
         </button>
@@ -223,45 +274,187 @@
     </div>
 
     <script>
-        // Configuration - UPDATE THIS WITH YOUR ACTUAL N8N WEBHOOK URL
+        // Configuration
         var WEBHOOK_URL = 'https://n8n.flowforgelab.com/webhook/voucher-validation';
-        var CLIENT_ID = 'chelan_ridge_winery';
         
-        console.log('JavaScript loaded');
-        
-        // Phone number formatting and normalization
-        function normalizePhoneNumber(phone) {
-            // Remove all non-digit characters
-            var digitsOnly = phone.replace(/\D/g, '');
+        var CLIENT_CONFIG = {
+            'chelan_ridge_winery': {
+                name: 'Chelan Ridge Winery',
+                displayName: '🍷 Chelan Ridge Winery',
+                shortName: 'Chelan Ridge',
+                subtitle: 'Chelan Ridge Winery - Staff Voucher Validation',
+                pageTitle: 'Voucher Validation - Chelan Ridge Winery',
+                colors: {
+                    primary: '#8B0000',
+                    secondary: '#A52A2A'
+                }
+            },
+            'demo_client': {
+                name: 'Demo Client',
+                displayName: '🧪 Demo Client',
+                shortName: 'Demo Client',
+                subtitle: 'Demo Client - Staff Voucher Validation',
+                pageTitle: 'Voucher Validation - Demo Client',
+                colors: {
+                    primary: '#2E8B57',
+                    secondary: '#3CB371'
+                }
+            }
+        };
+
+        // Global variables
+        var isInitialized = false;
+
+        // Utility functions
+        function getUrlParameter(name) {
+            if (!window.location || !window.location.search) return null;
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function updateBranding(clientId) {
+            var config = CLIENT_CONFIG[clientId];
+            if (!config) return;
             
-            // Handle different formats
-            if (digitsOnly.length === 10) {
-                return digitsOnly; // 2068325175
-            } else if (digitsOnly.length === 11 && digitsOnly.charAt(0) === '1') {
-                return digitsOnly.substring(1); // Remove leading 1
+            document.title = config.pageTitle;
+            
+            var logo = document.getElementById('logo') || document.querySelector('.logo');
+            if (logo) logo.textContent = config.displayName;
+            
+            var subtitle = document.getElementById('subtitle') || document.querySelector('.subtitle');
+            if (subtitle) subtitle.textContent = config.subtitle;
+            
+            var indicator = document.getElementById('selectedClientName');
+            if (indicator) indicator.textContent = config.displayName;
+            
+            document.documentElement.style.setProperty('--primary-color', config.colors.primary);
+            document.documentElement.style.setProperty('--secondary-color', config.colors.secondary);
+        }
+
+        function resetBranding() {
+            document.title = 'Voucher Validation - Multi-Client Portal';
+            
+            var logo = document.getElementById('logo') || document.querySelector('.logo');
+            if (logo) logo.textContent = '🍷 Multi-Client Voucher Portal';
+            
+            var subtitle = document.getElementById('subtitle') || document.querySelector('.subtitle');
+            if (subtitle) subtitle.textContent = 'Staff Voucher Validation System';
+            
+            document.documentElement.style.setProperty('--primary-color', '#8B0000');
+            document.documentElement.style.setProperty('--secondary-color', '#A52A2A');
+        }
+
+        function initializeFromUrl() {
+            var clientParam = getUrlParameter('client') || getUrlParameter('c');
+            var clientSelect = document.getElementById('clientSelect');
+            var clientSelectionGroup = document.getElementById('clientSelectionGroup');
+            var urlHelp = document.getElementById('urlHelp');
+            var clientIndicator = document.getElementById('clientIndicator');
+            
+            if (clientParam && CLIENT_CONFIG[clientParam] && clientSelect) {
+                // Auto-select and hide dropdown
+                clientSelect.value = clientParam;
+                if (clientSelectionGroup) clientSelectionGroup.style.display = 'none';
+                if (urlHelp) urlHelp.style.display = 'none';
+                if (clientIndicator) clientIndicator.style.display = 'block';
+                
+                updateBranding(clientParam);
+                
+                var phoneInput = document.getElementById('phoneNumber');
+                if (phoneInput) phoneInput.focus();
+                
+                return true;
+            } else {
+                // Show help if no valid client
+                if (urlHelp && !clientParam) urlHelp.style.display = 'block';
+                if (clientSelect) clientSelect.focus();
+                return false;
+            }
+        }
+
+        function setupEventListeners() {
+            var clientSelect = document.getElementById('clientSelect');
+            var clientIndicator = document.getElementById('clientIndicator');
+            
+            if (clientSelect) {
+                clientSelect.addEventListener('change', function() {
+                    var selectedClient = this.value;
+                    
+                    if (selectedClient && CLIENT_CONFIG[selectedClient]) {
+                        if (clientIndicator) clientIndicator.style.display = 'block';
+                        updateBranding(selectedClient);
+                    } else {
+                        if (clientIndicator) clientIndicator.style.display = 'none';
+                        resetBranding();
+                    }
+                });
             }
             
-            return digitsOnly; // Return as-is for other formats
+            // Phone formatting
+            var phoneInput = document.getElementById('phoneNumber');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    var value = e.target.value.replace(/\D/g, '');
+                    
+                    if (value.length >= 6) {
+                        value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+                    } else if (value.length >= 3) {
+                        value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
+                    }
+                    
+                    e.target.value = value;
+                });
+            }
+            
+            // Voucher code formatting
+            var voucherInput = document.getElementById('voucherCode');
+            if (voucherInput) {
+                voucherInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.toUpperCase();
+                });
+            }
         }
-        
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isInitialized) return;
+            isInitialized = true;
+            
+            setupEventListeners();
+            initializeFromUrl();
+        });
+
+        // Phone number normalization
+        function normalizePhoneNumber(phone) {
+            var digitsOnly = phone.replace(/\D/g, '');
+            
+            if (digitsOnly.length === 10) {
+                return digitsOnly;
+            } else if (digitsOnly.length === 11 && digitsOnly.charAt(0) === '1') {
+                return digitsOnly.substring(1);
+            }
+            
+            return digitsOnly;
+        }
+
         function setLoading(isLoading) {
             var validateBtn = document.getElementById('validateBtn');
             var loading = document.getElementById('loading');
             var result = document.getElementById('result');
             
-            validateBtn.disabled = isLoading;
-            loading.style.display = isLoading ? 'flex' : 'none';
-            result.style.display = 'none';
-            
-            if (isLoading) {
-                validateBtn.textContent = 'Validating...';
-            } else {
-                validateBtn.textContent = 'Validate Voucher';
+            if (validateBtn) {
+                validateBtn.disabled = isLoading;
+                validateBtn.textContent = isLoading ? 'Validating...' : 'Validate Voucher';
             }
+            
+            if (loading) loading.style.display = isLoading ? 'flex' : 'none';
+            if (result) result.style.display = 'none';
         }
-        
+
         function showSuccess(data) {
             var result = document.getElementById('result');
+            if (!result) return;
+            
             result.className = 'result success';
             result.innerHTML = '<h3>✅ Voucher Valid!</h3>' +
                 '<div class="customer-info">' +
@@ -276,21 +469,19 @@
                 '<button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>';
             result.style.display = 'block';
         }
-        
-        // Add this to replace the existing showError function in your HTML file
 
         function showError(message, details, errorData) {
             var result = document.getElementById('result');
+            if (!result) return;
+            
             result.className = 'result error';
             
-            // Check if this is an "already used" voucher
             if (errorData && errorData.errorType === 'already_used') {
                 result.innerHTML = '<h3>❌ Voucher Already Redeemed</h3>' +
                     '<p><strong>This voucher has already been used and cannot be redeemed again.</strong></p>' +
                     (details ? '<div class="error-details"><strong>Redemption Details:</strong><br>' + details + '</div>' : '') +
                     '<button class="reset-btn" onclick="resetForm()">Check Another Voucher</button>';
             } else {
-                // Standard error display for other error types
                 result.innerHTML = '<h3>❌ Validation Failed</h3>' +
                     '<p>' + message + '</p>' +
                     (details ? '<div class="error-details">' + details + '</div>' : '') +
@@ -301,22 +492,42 @@
         }
 
         function resetForm() {
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('voucherCode').value = '';
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('phoneNumber').focus();
+            var phoneInput = document.getElementById('phoneNumber');
+            var voucherInput = document.getElementById('voucherCode');
+            var result = document.getElementById('result');
+            var clientSelect = document.getElementById('clientSelect');
+            
+            if (phoneInput) phoneInput.value = '';
+            if (voucherInput) voucherInput.value = '';
+            if (result) result.style.display = 'none';
+            
+            // Focus based on whether client is pre-selected
+            var clientParam = getUrlParameter('client') || getUrlParameter('c');
+            if (clientParam && CLIENT_CONFIG[clientParam]) {
+                if (phoneInput) phoneInput.focus();
+            } else {
+                if (clientSelect) clientSelect.focus();
+            }
         }
-        
-        // Updated validateVoucher function - only the response handling part needs to change
-        // Replace the existing response handling in your validateVoucher function with this:
 
         function validateVoucher() {
-            console.log('Button clicked!');
+            var clientSelect = document.getElementById('clientSelect');
+            var phoneInput = document.getElementById('phoneNumber');
+            var voucherInput = document.getElementById('voucherCode');
             
-            var phoneNumber = document.getElementById('phoneNumber').value.trim();
-            var voucherCode = document.getElementById('voucherCode').value.trim().toUpperCase();
+            if (!clientSelect || !phoneInput || !voucherInput) {
+                showError('Form elements not found');
+                return;
+            }
             
-            console.log('Phone:', phoneNumber, 'Voucher:', voucherCode);
+            var clientId = clientSelect.value.trim();
+            var phoneNumber = phoneInput.value.trim();
+            var voucherCode = voucherInput.value.trim().toUpperCase();
+            
+            if (!clientId) {
+                showError('Please select a client first');
+                return;
+            }
             
             if (!phoneNumber) {
                 showError('Please enter the customer phone number');
@@ -335,19 +546,16 @@
                 return;
             }
             
-            console.log('Making API request to:', WEBHOOK_URL);
             setLoading(true);
             
             var requestData = {
+                client_id: clientId,
                 phone_number: normalizedPhone,
                 phone_number_formatted: phoneNumber,
                 voucher_code: voucherCode,
-                client_id: CLIENT_ID,
                 timestamp: new Date().toISOString(),
                 source: 'staff_portal'
             };
-            
-            console.log('Request data:', requestData);
             
             var xhr = new XMLHttpRequest();
             xhr.open('POST', WEBHOOK_URL, true);
@@ -355,22 +563,17 @@
             
             xhr.onload = function() {
                 setLoading(false);
-                console.log('Response status:', xhr.status);
-                console.log('Response text:', xhr.responseText);
                 
                 if (xhr.status >= 200 && xhr.status < 300) {
                     try {
                         var data = JSON.parse(xhr.responseText);
-                        console.log('Parsed response:', data);
                         
                         if (data.success) {
                             showSuccess(data);
                         } else {
-                            // Pass the full error data to showError for proper handling
                             showError(data.message || 'Voucher validation failed', data.details, data);
                         }
                     } catch (e) {
-                        console.error('JSON parse error:', e);
                         showError('Invalid response from server');
                     }
                 } else {
@@ -380,36 +583,11 @@
             
             xhr.onerror = function() {
                 setLoading(false);
-                console.error('Network error');
                 showError('Network error. Please check your connection and try again.');
             };
             
             xhr.send(JSON.stringify(requestData));
         }
-        
-        // Auto-format phone as user types
-        document.addEventListener('DOMContentLoaded', function() {
-            var phoneInput = document.getElementById('phoneNumber');
-            var voucherInput = document.getElementById('voucherCode');
-            
-            phoneInput.addEventListener('input', function(e) {
-                var value = e.target.value.replace(/\D/g, '');
-                
-                if (value.length >= 6) {
-                    value = value.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-                } else if (value.length >= 3) {
-                    value = value.replace(/(\d{3})(\d{0,3})/, '($1) $2');
-                }
-                
-                e.target.value = value;
-            });
-            
-            voucherInput.addEventListener('input', function(e) {
-                e.target.value = e.target.value.toUpperCase();
-            });
-            
-            phoneInput.focus();
-        });
     </script>
 </body>
 </html>
