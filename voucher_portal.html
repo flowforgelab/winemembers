@@ -231,19 +231,10 @@
         <div class="subtitle">Staff Voucher Validation System</div>
         
         <div class="url-help" id="urlHelp">
-            <strong>💡 Pro Tip:</strong> You can bookmark direct links:<br>
-            • Chelan Ridge: <code>?client=chelan_ridge_winery</code><br>
-            • Demo Client: <code>?client=demo_client</code>
+            <strong>⚠️ Access Required:</strong> This portal requires a direct access link from your administrator.
         </div>
         
-        <div class="form-group" id="clientSelectionGroup">
-            <label for="clientSelect">Select Client:</label>
-            <select id="clientSelect" name="clientSelect" required>
-                <option value="">-- Select a Client --</option>
-                <option value="chelan_ridge_winery">Chelan Ridge Winery</option>
-                <option value="demo_client">Demo Client</option>
-            </select>
-        </div>
+        <!-- Client selection removed for security - URL parameter required -->
 
         <div class="client-indicator" id="clientIndicator" style="display: none;">
             <span id="selectedClientName">No client selected</span>
@@ -304,6 +295,7 @@
 
         // Global variables
         var isInitialized = false;
+        var currentClientId = null;
 
         // Utility functions
         function getUrlParameter(name) {
@@ -346,15 +338,11 @@
 
         function initializeFromUrl() {
             var clientParam = getUrlParameter('client') || getUrlParameter('c');
-            var clientSelect = document.getElementById('clientSelect');
-            var clientSelectionGroup = document.getElementById('clientSelectionGroup');
             var urlHelp = document.getElementById('urlHelp');
             var clientIndicator = document.getElementById('clientIndicator');
             
-            if (clientParam && CLIENT_CONFIG[clientParam] && clientSelect) {
-                // Auto-select and hide dropdown
-                clientSelect.value = clientParam;
-                if (clientSelectionGroup) clientSelectionGroup.style.display = 'none';
+            if (clientParam && CLIENT_CONFIG[clientParam]) {
+                // Valid client - hide help and show branding
                 if (urlHelp) urlHelp.style.display = 'none';
                 if (clientIndicator) clientIndicator.style.display = 'block';
                 
@@ -363,32 +351,27 @@
                 var phoneInput = document.getElementById('phoneNumber');
                 if (phoneInput) phoneInput.focus();
                 
-                return true;
+                return clientParam; // Return the client ID
             } else {
-                // Show help if no valid client
-                if (urlHelp && !clientParam) urlHelp.style.display = 'block';
-                if (clientSelect) clientSelect.focus();
-                return false;
+                // No valid client - show access required message
+                if (urlHelp) urlHelp.style.display = 'block';
+                if (clientIndicator) clientIndicator.style.display = 'none';
+                
+                // Disable the form
+                var phoneInput = document.getElementById('phoneNumber');
+                var voucherInput = document.getElementById('voucherCode');
+                var validateBtn = document.getElementById('validateBtn');
+                
+                if (phoneInput) phoneInput.disabled = true;
+                if (voucherInput) voucherInput.disabled = true;
+                if (validateBtn) validateBtn.disabled = true;
+                
+                return null;
             }
         }
 
         function setupEventListeners() {
-            var clientSelect = document.getElementById('clientSelect');
-            var clientIndicator = document.getElementById('clientIndicator');
-            
-            if (clientSelect) {
-                clientSelect.addEventListener('change', function() {
-                    var selectedClient = this.value;
-                    
-                    if (selectedClient && CLIENT_CONFIG[selectedClient]) {
-                        if (clientIndicator) clientIndicator.style.display = 'block';
-                        updateBranding(selectedClient);
-                    } else {
-                        if (clientIndicator) clientIndicator.style.display = 'none';
-                        resetBranding();
-                    }
-                });
-            }
+            // No client selection dropdown - only input formatting
             
             // Phone formatting
             var phoneInput = document.getElementById('phoneNumber');
@@ -421,7 +404,7 @@
             isInitialized = true;
             
             setupEventListeners();
-            initializeFromUrl();
+            currentClientId = initializeFromUrl();
         });
 
         // Phone number normalization
@@ -495,39 +478,32 @@
             var phoneInput = document.getElementById('phoneNumber');
             var voucherInput = document.getElementById('voucherCode');
             var result = document.getElementById('result');
-            var clientSelect = document.getElementById('clientSelect');
             
             if (phoneInput) phoneInput.value = '';
             if (voucherInput) voucherInput.value = '';
             if (result) result.style.display = 'none';
             
-            // Focus based on whether client is pre-selected
-            var clientParam = getUrlParameter('client') || getUrlParameter('c');
-            if (clientParam && CLIENT_CONFIG[clientParam]) {
-                if (phoneInput) phoneInput.focus();
-            } else {
-                if (clientSelect) clientSelect.focus();
-            }
+            // Always focus on phone input since no client selection
+            if (phoneInput && !phoneInput.disabled) phoneInput.focus();
         }
 
         function validateVoucher() {
-            var clientSelect = document.getElementById('clientSelect');
+            // Check if we have a valid client from URL
+            if (!currentClientId) {
+                showError('Access denied. Please use the direct link provided by your administrator.');
+                return;
+            }
+            
             var phoneInput = document.getElementById('phoneNumber');
             var voucherInput = document.getElementById('voucherCode');
             
-            if (!clientSelect || !phoneInput || !voucherInput) {
+            if (!phoneInput || !voucherInput) {
                 showError('Form elements not found');
                 return;
             }
             
-            var clientId = clientSelect.value.trim();
             var phoneNumber = phoneInput.value.trim();
             var voucherCode = voucherInput.value.trim().toUpperCase();
-            
-            if (!clientId) {
-                showError('Please select a client first');
-                return;
-            }
             
             if (!phoneNumber) {
                 showError('Please enter the customer phone number');
@@ -549,7 +525,7 @@
             setLoading(true);
             
             var requestData = {
-                client_id: clientId,
+                client_id: currentClientId,
                 phone_number: normalizedPhone,
                 phone_number_formatted: phoneNumber,
                 voucher_code: voucherCode,
