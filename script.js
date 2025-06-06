@@ -1,342 +1,425 @@
-// Chat Widget JavaScript
-// Add this script after the HTML or in a separate JS file
+// Enhanced WineMembers.AI Website JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functionality
+    initializeNavigation();
+    initializeScrollEffects();
+    initializeFAQ();
+    initializeAnimations();
+    initializeForm();
+    initializeMobileMenu();
+});
 
-// Initialize Chat Widget
-function initializeChatWidget() {
-    const chatBubble = document.getElementById('chatBubble');
-    const chatWidget = document.getElementById('chatWidget');
-    const closeBtn = document.getElementById('closeBtn');
-    const chatForm = document.getElementById('chatForm');
-    const phoneInput = document.getElementById('phoneInput');
-    const emailInput = document.getElementById('emailInput');
-    const phoneError = document.getElementById('phoneError');
-    const emailError = document.getElementById('emailError');
-    const agreementCheckbox = document.getElementById('agreementCheckbox');
-    const submitBtn = document.getElementById('submitBtn');
-    const pageUrlInput = document.getElementById('pageUrl');
-    const utmSourceInput = document.getElementById('utmSource');
-    const utmMediumInput = document.getElementById('utmMedium');
-    const utmCampaignInput = document.getElementById('utmCampaign');
+// Navigation and Smooth Scrolling
+function initializeNavigation() {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = target.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
 
-    // Set current page URL and UTM parameters
-    if (pageUrlInput) pageUrlInput.value = window.location.href;
+// Scroll Effects and Progress Bar
+function initializeScrollEffects() {
+    const header = document.querySelector('.header');
+    const scrollProgress = document.querySelector('.scroll-progress');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        // Header background change on scroll
+        if (currentScroll > 100) {
+            header.style.background = 'rgba(26, 26, 26, 0.98)';
+            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.4)';
+        } else {
+            header.style.background = 'rgba(26, 26, 26, 0.95)';
+            header.style.boxShadow = 'none';
+        }
+
+        // Scroll progress indicator
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        if (scrollProgress) {
+            scrollProgress.style.width = scrolled + '%';
+        }
+
+        lastScroll = currentScroll;
+    });
+}
+
+// Enhanced FAQ Functionality
+function initializeFAQ() {
+    const faqItems = document.querySelectorAll('.faq-item');
     
-    // Extract UTM parameters from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    if (utmSourceInput) utmSourceInput.value = urlParams.get('utm_source') || '';
-    if (utmMediumInput) utmMediumInput.value = urlParams.get('utm_medium') || '';
-    if (utmCampaignInput) utmCampaignInput.value = urlParams.get('utm_campaign') || '';
-
-    // Open/Close Widget
-    if (chatBubble && chatWidget) {
-        chatBubble.addEventListener('click', () => {
-            chatBubble.style.display = 'none';
-            chatWidget.classList.add('open');
-            // Auto-focus first input
-            setTimeout(() => {
-                const firstInput = chatWidget.querySelector('.form-input');
-                if (firstInput) firstInput.focus();
-            }, 100);
-        });
-
-        closeBtn.addEventListener('click', () => {
-            chatWidget.classList.remove('open');
-            setTimeout(() => {
-                chatBubble.style.display = 'flex';
-            }, 300);
-        });
-    }
-
-    // Phone Formatting & Validation
-    if (phoneInput) {
-        phoneInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            
-            if (value.length > 10) {
-                value = value.slice(0, 10);
-            }
-            
-            if (value.length >= 6) {
-                value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
-            } else if (value.length >= 3) {
-                value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
-            }
-            
-            e.target.value = value;
-            validatePhone();
-            checkFormValidity();
-        });
-    }
-
-    function validatePhone() {
-        if (!phoneInput) return true;
-        const phoneValue = phoneInput.value.replace(/\D/g, '');
-        const isValid = phoneValue.length === 10;
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
         
-        if (phoneInput.value && !isValid) {
-            phoneInput.classList.add('error');
-            phoneInput.classList.remove('valid');
-            if (phoneError) {
-                phoneError.textContent = 'Please enter a valid 10-digit phone number';
-                phoneError.classList.add('show');
-            }
-        } else if (isValid) {
-            phoneInput.classList.remove('error');
-            phoneInput.classList.add('valid');
-            if (phoneError) phoneError.classList.remove('show');
-        } else {
-            phoneInput.classList.remove('error', 'valid');
-            if (phoneError) phoneError.classList.remove('show');
+        if (question) {
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other FAQ items with smooth animation
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                        const otherAnswer = otherItem.querySelector('.faq-answer');
+                        if (otherAnswer) {
+                            otherAnswer.style.maxHeight = '0';
+                        }
+                    }
+                });
+                
+                // Toggle current item with enhanced animation
+                if (isActive) {
+                    item.classList.remove('active');
+                    const answer = item.querySelector('.faq-answer');
+                    if (answer) {
+                        answer.style.maxHeight = '0';
+                    }
+                } else {
+                    item.classList.add('active');
+                    const answer = item.querySelector('.faq-answer');
+                    if (answer) {
+                        // Set max-height to scrollHeight for smooth expansion
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    }
+                }
+            });
         }
-        
-        return isValid || !phoneInput.value;
-    }
+    });
+}
 
-    // Email Validation
-    function validateEmail() {
-        if (!emailInput) return true;
-        const emailValue = emailInput.value;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isValid = emailRegex.test(emailValue);
-        
-        if (emailValue && !isValid) {
-            emailInput.classList.add('error');
-            emailInput.classList.remove('valid');
-            if (emailError) {
-                emailError.textContent = 'Please enter a valid email address';
-                emailError.classList.add('show');
+// Scroll-triggered Animations
+function initializeAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+                
+                // Add staggered animation for cards in the same section
+                const cards = entry.target.querySelectorAll('.feature-card, .service-card, .stat-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate');
+                    }, index * 100);
+                });
             }
-        } else if (isValid) {
-            emailInput.classList.remove('error');
-            emailInput.classList.add('valid');
-            if (emailError) emailError.classList.remove('show');
-        } else {
-            emailInput.classList.remove('error', 'valid');
-            if (emailError) emailError.classList.remove('show');
-        }
-        
-        return isValid || !emailValue;
-    }
-
-    if (emailInput) {
-        emailInput.addEventListener('input', function() {
-            validateEmail();
-            checkFormValidity();
         });
-        emailInput.addEventListener('blur', validateEmail);
-    }
+    }, observerOptions);
 
-    // Form Validation & Button State Management
-    function checkFormValidity() {
-        if (!chatForm || !submitBtn) return;
+    // Observe all elements with animation class
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
 
-        const firstName = chatForm.querySelector('input[name="first_name"]')?.value?.trim() || '';
-        const lastName = chatForm.querySelector('input[name="last_name"]')?.value?.trim() || '';
-        const phone = phoneInput?.value?.replace(/\D/g, '') || '';
-        const email = emailInput?.value?.trim() || '';
-        const wineryName = chatForm.querySelector('input[name="winery_name"]')?.value?.trim() || '';
-        const challenge = chatForm.querySelector('select[name="challenge"]')?.value || '';
-        const isAgreed = agreementCheckbox?.checked || false;
-        
-        const isPhoneValid = phone.length === 10;
-        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        
-        const allFieldsFilled = firstName && lastName && isPhoneValid && isEmailValid && 
-                              wineryName && challenge && isAgreed;
-        
-        submitBtn.disabled = !allFieldsFilled;
-    }
+    // Observe individual cards for staggered animations
+    document.querySelectorAll('.feature-card, .service-card, .stat-card, .faq-item').forEach(el => {
+        observer.observe(el);
+    });
+}
 
-    // Add event listeners to all form fields for validation
-    if (chatForm) {
-        const formInputs = chatForm.querySelectorAll('.form-input, .form-select, .form-textarea');
-        formInputs.forEach(input => {
-            input.addEventListener('input', checkFormValidity);
-            input.addEventListener('change', checkFormValidity);
-        });
-
-        if (agreementCheckbox) {
-            agreementCheckbox.addEventListener('change', checkFormValidity);
-        }
-
-        // Initial check
-        checkFormValidity();
-    }
-
-    // Form Submission - Integration with n8n
-    if (chatForm) {
-        chatForm.addEventListener('submit', async function(e) {
+// Enhanced Form Handling
+function initializeForm() {
+    const contactForm = document.querySelector('.contact-form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            if (!agreementCheckbox?.checked) {
-                alert('Please agree to the terms before submitting.');
+            // Get form data
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData);
+            
+            // Basic validation
+            let isValid = true;
+            const requiredFields = contactForm.querySelectorAll('input[required], textarea[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error');
+                    showFieldError(field, 'This field is required');
+                } else {
+                    field.classList.remove('error');
+                    hideFieldError(field);
+                }
+            });
+            
+            // Email validation
+            const emailField = contactForm.querySelector('input[type="email"]');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                    isValid = false;
+                    emailField.classList.add('error');
+                    showFieldError(emailField, 'Please enter a valid email address');
+                }
+            }
+            
+            if (!isValid) {
                 return;
             }
             
-            const isPhoneValid = validatePhone();
-            const isEmailValid = validateEmail();
-            
-            if (!isPhoneValid || !isEmailValid) {
-                alert('Please correct the errors before submitting.');
-                return;
-            }
-
             // Show loading state
-            submitBtn.classList.add('loading');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
             submitBtn.disabled = true;
-
-            try {
-                // Collect all form data
-                const formData = new FormData(chatForm);
-                
-                // Convert to object for n8n webhook
-                const data = {
-                    // Contact Information
-                    first_name: formData.get('first_name'),
-                    last_name: formData.get('last_name'),
-                    full_name: `${formData.get('first_name')} ${formData.get('last_name')}`,
-                    phone: formData.get('phone'),
-                    email: formData.get('email'),
-                    
-                    // Business Information
-                    winery_name: formData.get('winery_name'),
-                    challenge: formData.get('challenge'),
-                    message: formData.get('message') || '',
-                    
-                    // Lead Source & Attribution
-                    source: formData.get('source'),
-                    page_url: formData.get('page_url'),
-                    utm_source: formData.get('utm_source'),
-                    utm_medium: formData.get('utm_medium'),
-                    utm_campaign: formData.get('utm_campaign'),
-                    
-                    // Metadata
-                    submitted_at: new Date().toISOString(),
-                    user_agent: navigator.userAgent,
-                    referrer: document.referrer,
-                    
-                    // GHL Configuration
-                    ghl_workflow: 'chat_widget_submission',
-                    lead_type: 'website_inquiry',
-                    status: 'new',
-                    priority: 'high'
-                };
-
-                // Send to n8n webhook
-                await submitToN8n(data);
-
+            submitBtn.textContent = 'Sending...';
+            submitBtn.style.opacity = '0.7';
+            
+            // Simulate form submission (replace with actual form handling)
+            setTimeout(() => {
                 // Show success message
                 showSuccessMessage();
                 
-                // Reset form after delay
-                setTimeout(() => {
-                    closeBtn.click();
-                    resetForm();
-                }, 3000);
-
-            } catch (error) {
-                console.error('Submission error:', error);
-                alert('Something went wrong. Please try again or contact us directly.');
+                // Reset form
+                contactForm.reset();
                 
-                // Reset button state
-                submitBtn.classList.remove('loading');
+                // Reset button
                 submitBtn.disabled = false;
-            }
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.opacity = '1';
+            }, 2000);
+        });
+        
+        // Real-time validation
+        const formInputs = contactForm.querySelectorAll('input, textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('blur', validateField);
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) {
+                    validateField.call(input);
+                }
+            });
         });
     }
+}
 
-    // Function to submit to n8n webhook
-    async function submitToN8n(data) {
-        // ⚠️ REPLACE WITH YOUR ACTUAL N8N WEBHOOK URL ⚠️
-        const n8nWebhookUrl = 'https://your-n8n-instance.com/webhook/winemembers-chat-widget';
-        
-        const response = await fetch(n8nWebhookUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            // Add timeout
-            signal: AbortSignal.timeout(10000) // 10 second timeout
+// Form Validation Helpers
+function validateField() {
+    const field = this;
+    const value = field.value.trim();
+    
+    if (field.hasAttribute('required') && !value) {
+        field.classList.add('error');
+        showFieldError(field, 'This field is required');
+        return false;
+    }
+    
+    if (field.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            field.classList.add('error');
+            showFieldError(field, 'Please enter a valid email address');
+            return false;
+        }
+    }
+    
+    field.classList.remove('error');
+    hideFieldError(field);
+    return true;
+}
+
+function showFieldError(field, message) {
+    // Remove existing error message
+    hideFieldError(field);
+    
+    // Create and show new error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.textContent = message;
+    errorDiv.style.color = '#ff4757';
+    errorDiv.style.fontSize = '0.875rem';
+    errorDiv.style.marginTop = '0.25rem';
+    
+    field.parentNode.appendChild(errorDiv);
+}
+
+function hideFieldError(field) {
+    const existingError = field.parentNode.querySelector('.field-error');
+    if (existingError) {
+        existingError.remove();
+    }
+}
+
+function showSuccessMessage() {
+    const form = document.querySelector('.contact-form');
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.innerHTML = `
+        <div style="text-align: center; padding: 2rem; background: rgba(46, 213, 115, 0.1); border: 1px solid #2ed573; border-radius: 12px; color: #2ed573;">
+            <h3 style="margin-bottom: 1rem; color: #2ed573;">Thank You!</h3>
+            <p style="margin: 0; color: #b8b8b8;">We'll be in touch shortly to schedule your consultation.</p>
+        </div>
+    `;
+    
+    form.parentNode.insertBefore(successDiv, form.nextSibling);
+    
+    // Remove success message after 5 seconds
+    setTimeout(() => {
+        successDiv.remove();
+    }, 5000);
+}
+
+// Mobile Menu Functionality
+function initializeMobileMenu() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mainNav = document.querySelector('.main-nav');
+
+    if (mobileMenuBtn && mainNav) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active');
+            
+            // Animate hamburger menu
+            const spans = mobileMenuBtn.querySelectorAll('span');
+            if (mobileMenuBtn.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+            } else {
+                spans.forEach(span => {
+                    span.style.transform = 'none';
+                    span.style.opacity = '1';
+                });
+            }
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.main-nav') && !e.target.closest('.mobile-menu-btn')) {
+                if (mobileMenuBtn.classList.contains('active')) {
+                    mobileMenuBtn.classList.remove('active');
+                    mainNav.classList.remove('active');
+                    
+                    // Reset hamburger menu
+                    const spans = mobileMenuBtn.querySelectorAll('span');
+                    spans.forEach(span => {
+                        span.style.transform = 'none';
+                        span.style.opacity = '1';
+                    });
+                }
+            }
+        });
 
-        const result = await response.json();
-        console.log('n8n submission successful:', result);
-        return result;
+        // Close mobile menu when clicking on a link
+        const navLinks = mainNav.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                mainNav.classList.remove('active');
+                
+                // Reset hamburger menu
+                const spans = mobileMenuBtn.querySelectorAll('span');
+                spans.forEach(span => {
+                    span.style.transform = 'none';
+                    span.style.opacity = '1';
+                });
+            });
+        });
     }
+}
 
-    // Function to show success message
-    function showSuccessMessage() {
-        const chatContent = chatWidget.querySelector('.chat-content');
-        
-        // Create success message
-        const successDiv = document.createElement('div');
-        successDiv.className = 'success-message';
-        successDiv.innerHTML = `
-            <strong>Thank you!</strong><br>
-            We'll be in touch shortly to discuss your AI marketing strategy.
-        `;
-        
-        // Insert at the beginning of chat content
-        chatContent.insertBefore(successDiv, chatContent.firstChild);
-    }
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
-    // Function to reset form
-    function resetForm() {
-        if (chatForm) {
-            chatForm.reset();
-            
-            // Remove validation classes
-            if (phoneInput) {
-                phoneInput.classList.remove('error', 'valid');
-            }
-            if (emailInput) {
-                emailInput.classList.remove('error', 'valid');
-            }
-            
-            // Hide error messages
-            if (phoneError) phoneError.classList.remove('show');
-            if (emailError) emailError.classList.remove('show');
-            
-            // Reset button state
-            submitBtn.classList.remove('loading');
-            submitBtn.disabled = true;
-            
-            // Remove success message
-            const successMessage = chatWidget.querySelector('.success-message');
-            if (successMessage) {
-                successMessage.remove();
-            }
-            
-            // Re-check form validity
-            checkFormValidity();
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
         }
     }
+}
 
-    // Close widget when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.chat-widget-container')) {
-            if (chatWidget?.classList.contains('open')) {
-                closeBtn.click();
-            }
-        }
+// Performance optimized scroll handler
+const optimizedScrollHandler = throttle(() => {
+    // Any additional scroll-based functionality can go here
+}, 16); // ~60fps
+
+window.addEventListener('scroll', optimizedScrollHandler);
+
+// Add resize handler for responsive adjustments
+window.addEventListener('resize', debounce(() => {
+    // Handle any resize-specific functionality
+    const faqItems = document.querySelectorAll('.faq-item.active .faq-answer');
+    faqItems.forEach(answer => {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
     });
+}, 250));
 
-    // Keyboard navigation
+// Add keyboard navigation for accessibility
+document.addEventListener('keydown', (e) => {
+    // FAQ keyboard navigation
+    if (e.target.classList.contains('faq-question')) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.target.click();
+        }
+    }
+    
+    // Close mobile menu with Escape key
+    if (e.key === 'Escape') {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mainNav = document.querySelector('.main-nav');
+        
+        if (mobileMenuBtn && mobileMenuBtn.classList.contains('active')) {
+            mobileMenuBtn.classList.remove('active');
+            mainNav.classList.remove('active');
+            
+            const spans = mobileMenuBtn.querySelectorAll('span');
+            spans.forEach(span => {
+                span.style.transform = 'none';
+                span.style.opacity = '1';
+            });
+        }
+    }
+});
+
+// Initialize focus management for better accessibility
+function initializeFocusManagement() {
+    // Add focus visible polyfill behavior
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && chatWidget?.classList.contains('open')) {
-            closeBtn.click();
+        if (e.key === 'Tab') {
+            document.body.classList.add('keyboard-navigation');
         }
+    });
+    
+    document.addEventListener('mousedown', () => {
+        document.body.classList.remove('keyboard-navigation');
     });
 }
 
-// Initialize chat widget when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeChatWidget);
-} else {
-    initializeChatWidget();
-}
+// Call focus management initialization
+initializeFocusManagement();

@@ -160,7 +160,7 @@ p {
 
 .logo h1 {
     font-size: 1.8rem;
-    color: var(--wine-burgundy);
+    color: var(--gray-text);
     margin: 0;
     font-weight: 600;
 }
@@ -256,8 +256,8 @@ p {
 
 .btn-secondary {
     background: transparent;
-    color: var(--wine-burgundy);
-    border: 2px solid var(--wine-burgundy);
+    color: var(--gray-text);
+    border: 2px solid var(--gray-text);
 }
 
 .btn-secondary:hover {
@@ -279,7 +279,7 @@ p {
 .mobile-menu-btn span {
     width: 25px;
     height: 3px;
-    background: var(--wine-burgundy);
+    background: var(--gray-text);
     margin: 3px 0;
     transition: 0.3s;
     border-radius: 2px;
@@ -374,7 +374,7 @@ p {
 /* Enhanced Feature Cards */
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 2.5rem;
     margin-top: 3rem;
 }
@@ -444,7 +444,7 @@ p {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
 }
 

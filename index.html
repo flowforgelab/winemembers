@@ -1,122 +1,430 @@
-<!-- Custom Chat Widget HTML -->
-<!-- Add this before the closing </body> tag -->
-
-<div class="chat-widget-container">
-    <!-- Chat Bubble -->
-    <div class="chat-bubble" id="chatBubble">
-        <div class="chat-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </div>
-
-    <!-- Chat Widget -->
-    <div class="chat-widget" id="chatWidget">
-        <!-- Header -->
-        <div class="chat-header">
-            <button class="close-btn" id="closeBtn">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WineMembers.AI - Wine Industry AI Marketing Agency</title>
+    <meta name="description" content="AI-powered marketing solutions for wineries. Increase leads, appointments, sales, and customer retention with our cutting-edge AI technology.">
+    <meta name="keywords" content="wine marketing, AI marketing, winery growth, wine industry, digital marketing for wineries">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="WineMembers.AI - Wine Industry AI Marketing Agency">
+    <meta property="og:description" content="Transform your winery's growth with AI-powered marketing solutions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://winemembers.ai">
+    <meta property="og:image" content="https://winemembers.ai/images/og-image.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WineMembers.AI - Wine Industry AI Marketing Agency">
+    <meta name="twitter:description" content="Transform your winery's growth with AI-powered marketing solutions.">
+    <meta name="twitter:image" content="https://winemembers.ai/images/twitter-card.jpg">
+    
+    <!-- GBP Verification -->
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE">
+    
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data for Local Business -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "WineMembers.AI",
+        "image": "https://winemembers.ai/images/logo.jpg",
+        "description": "AI-powered marketing solutions for wineries. Increase leads, appointments, sales, and customer retention with our cutting-edge AI technology.",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "1406 151st Ave SE",
+            "addressLocality": "Bellevue",
+            "addressRegion": "WA",
+            "postalCode": "98007",
+            "addressCountry": "US"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 47.5990,
+            "longitude": -122.1370
+        },
+        "url": "https://winemembers.ai",
+        "telephone": "(425) 908-0250",
+        "email": "hello@winemembers.ai",
+        "priceRange": "$$",
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+            ],
+            "opens": "09:00",
+            "closes": "17:00"
+        },
+        "sameAs": [
+            "https://www.linkedin.com/company/winemembers-ai/",
+            "https://www.facebook.com/profile.php?id=61577083020776"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <div class="scroll-progress"></div>
+    
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="#">
+                    <h1>WineMembers<span>.AI</span></h1>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#about">Services</a></li>
+                    <li><a href="#services">Features</a></li>
+                    <li><a href="#stats">Industry Data</a></li>
+                    <li><a href="#contact" class="btn-primary">Contact Us</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-            <div class="chat-title">
-                <div class="chat-icon">
-                    <div class="chat-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Revolutionize Your Winery's Growth with AI</h1>
+                <p class="hero-subtitle">Leverage cutting-edge AI solutions to increase leads, appointments, sales, and customer retention for your winery.</p>
+                <div class="hero-cta">
+                    <a href="#contact" class="btn-primary">Get Started</a>
+                    <a href="#about" class="btn-secondary">Learn More</a>
                 </div>
-                Let's Connect
             </div>
         </div>
+    </section>
 
-        <!-- Content -->
-        <div class="chat-content">
-            <div class="chat-message">
-                Ready to transform your winery's growth? Share your information and we'll reach out to discuss your AI marketing strategy.
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>AI Enabled Services That <span class="highlight">TurboCharge</span> Your Winery's Growth</h2>
+                <p class="section-description">Strategic AI solutions designed specifically to solve the four most critical challenges wineries face today. Powered by custom ChatGPT plugins and AI automation.</p>
             </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Tasting Room Traffic</h3>
+                    <p>Consistently attract qualified visitors to your tasting room through AI-powered targeting and engagement strategies.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
+                            <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Online Reputation</h3>
+                    <p>Build and maintain exceptional ratings on Google, Yelp, and other platforms to enhance credibility and organic discovery.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>Wine Club Conversion</h3>
+                    <p>Transform one-time visitors into committed wine club members through personalized AI follow-up and targeted offers.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
+                            <path d="M21.5 2v6h-6"></path>
+                            <path d="M2.5 22v-6h6"></path>
+                            <path d="M2 11.5a10 10 0 0 1 18.8-4.3"></path>
+                            <path d="M22 12.5a10 10 0 0 1-18.8 4.2"></path>
+                        </svg>
+                    </div>
+                    <h3>Member Retention</h3>
+                    <p>Keep wine club members engaged and loyal with AI-driven personalization, exclusive experiences, and retention strategies.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            <form id="chatForm">
-                <!-- Name Row -->
-                <div class="form-row">
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Our <span class="highlight">AI-Powered</span> Features</h2>
+                <p class="section-description">Comprehensive tools designed specifically for wineries, powered by advanced AI and ChatGPT plugins.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card animate-on-scroll">
+                    <div class="service-content">
+                        <h3>AI Reviews + Referrals</h3>
+                        <p>Boost your winery's online presence with more 5-star Google reviews, improving organic ranking and building trust. We'll implement a seamless process to generate referrals from satisfied customers.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-content">
+                        <h3>AI List Reactivation</h3>
+                        <p>Re-engage past visitors and warm prospects to bring them back for tastings, events, and purchases without additional ad spend. Our ChatGPT plugin helps create personalized messages that drive action.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-content">
+                        <h3>AI Lead Nurturing</h3>
+                        <p>Combine AI with smart automations to follow up, qualify, and book tasting appointments from paid advertising. We bridge the critical gap from lead to appointment with customized messaging.</p>
+                    </div>
+                </div>
+                
+                <div class="service-card animate-on-scroll">
+                    <div class="service-content">
+                        <h3>AI Paid Acquisition</h3>
+                        <p>After reactivating your customer list, we'll implement targeted Facebook/Instagram/TikTok ads to bring in fresh leads and introduce new customers to your winery using AI-optimized content and targeting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats" class="stats">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>The Wine Industry is at a <span class="highlight">Critical Crossroads</span></h2>
+                <p class="section-description">Data reveals a stark divide between wineries that embrace modern technology and those falling behind. Which side will you choose?</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card urgent animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-number">76%</div>
+                    <div class="stat-label">of wineries are concerned about maintaining or growing sales in the next 12 months</div>
+                </div>
+                
+                <div class="stat-card urgent animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-number">44%</div>
+                    <div class="stat-label">worry about getting enough direct traffic to their tasting rooms</div>
+                </div>
+                
+                <div class="stat-card urgent animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="3" width="15" height="13"></rect>
+                            <polygon points="16,8 20,8 23,11 23,16 16,16"></polygon>
+                            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                    </div>
+                    <div class="stat-number">46%</div>
+                    <div class="stat-label">of wineries producing less than 10,000 cases are cash flow positive</div>
+                </div>
+                
+                <div class="stat-card success animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9L12 15L18 9"></path>
+                        </svg>
+                    </div>
+                    <div class="stat-number">2.4x</div>
+                    <div class="stat-label">Top wineries are more likely to use data to guide decisions</div>
+                </div>
+                
+                <div class="stat-card success animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-number">2.3x</div>
+                    <div class="stat-label">Top wineries are more likely to be cash-flow positive</div>
+                </div>
+                
+                <div class="stat-card warning animate-on-scroll">
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-number">3.4x</div>
+                    <div class="stat-label">Wineries without modern tech have lower ability to make data-driven decisions</div>
+                </div>
+            </div>
+            
+            <div class="stats-cta animate-on-scroll">
+                <h3>Don't Let Your Winery Fall Behind</h3>
+                <p>Join the top 15% of wineries that invest in modern technology and see 2x higher profit margins.</p>
+                <a href="#contact" class="btn-primary">Join the Top Performers</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Frequently Asked <span class="highlight">Questions</span></h2>
+                <p class="section-description">Get answers to common questions about our AI-powered solutions for wineries.</p>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>How does AI help wineries grow?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our AI solutions help wineries in multiple ways: optimizing marketing campaigns, personalizing customer experiences, automating follow-ups, and providing data-driven insights for better decision-making. This leads to increased tasting room traffic, higher wine club conversions, and improved customer retention.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>What makes WineMembers.AI different?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Unlike traditional marketing agencies, we specialize exclusively in the wine industry and leverage custom-built AI tools specifically designed for wineries. Our solutions are tailored to address the unique challenges of wine marketing and sales, with proven results in increasing leads, appointments, and sales.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>How long does it take to see results?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Most of our clients see initial results within 30-60 days. However, the exact timeline depends on your specific goals and current marketing setup. We'll provide you with a detailed timeline during your initial consultation.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>What size wineries do you work with?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We work with wineries of all sizes, from boutique producers to established brands. Our AI solutions are scalable and can be customized to meet the specific needs and goals of your winery, regardless of size.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>How much does it cost?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our pricing is customized based on your winery's specific needs and goals. We offer flexible packages that can be tailored to your budget and growth objectives. Contact us for a personalized quote.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item animate-on-scroll">
+                    <button class="faq-question">
+                        <h3>Do I need technical expertise?</h3>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No technical expertise is required. We handle all the technical aspects of our AI solutions, and our team will guide you through the implementation process. We focus on making the technology work for you, not the other way around.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2>Ready to <span class="highlight">Grow Your Winery</span> with AI?</h2>
+                <p class="section-description">Schedule a free consultation to see how our AI Growth Machine can transform your business.</p>
+            </div>
+            
+            <form class="contact-form animate-on-scroll">
+                <div class="form-grid">
                     <div class="form-group">
-                        <input type="text" class="form-input" name="first_name" placeholder="First Name" required>
+                        <label for="name">Winery Name</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-input" name="last_name" placeholder="Last Name" required>
+                        <label for="contact-name">Contact Person</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="message">Tell us about your winery and current challenges</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary">Schedule Free Consultation</button>
                     </div>
                 </div>
-
-                <!-- Contact Info -->
-                <div class="form-group">
-                    <input type="tel" class="form-input" id="phoneInput" name="phone" placeholder="Phone Number" required>
-                    <div class="error-message" id="phoneError"></div>
-                </div>
-
-                <div class="form-group">
-                    <input type="email" class="form-input" id="emailInput" name="email" placeholder="Email Address" required>
-                    <div class="error-message" id="emailError"></div>
-                </div>
-
-                <!-- Winery Info -->
-                <div class="form-group">
-                    <input type="text" class="form-input" name="winery_name" placeholder="Winery Name" required>
-                </div>
-
-                <!-- Help Category -->
-                <div class="form-group">
-                    <label class="select-label">What's your biggest challenge?</label>
-                    <select class="form-select" name="challenge" required>
-                        <option value="">Select your primary concern</option>
-                        <option value="tasting_room_traffic">Increasing tasting room traffic</option>
-                        <option value="wine_club_conversion">Wine club conversions</option>
-                        <option value="online_reputation">Online reputation management</option>
-                        <option value="member_retention">Member retention</option>
-                        <option value="digital_marketing">Digital marketing strategy</option>
-                        <option value="lead_generation">Lead generation</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <!-- Message -->
-                <div class="form-group">
-                    <textarea class="form-textarea" name="message" placeholder="Tell us more about your winery and goals..." rows="3"></textarea>
-                </div>
-
-                <!-- Hidden fields -->
-                <input type="hidden" name="source" value="Website Chat Widget">
-                <input type="hidden" name="page_url" id="pageUrl">
-                <input type="hidden" name="utm_source" id="utmSource">
-                <input type="hidden" name="utm_medium" id="utmMedium">
-                <input type="hidden" name="utm_campaign" id="utmCampaign">
             </form>
         </div>
+    </section>
 
-        <!-- Footer -->
-        <div class="chat-footer">
-            <!-- Agreement -->
-            <div class="agreement-section">
-                <label class="checkbox-container">
-                    <input type="checkbox" id="agreementCheckbox" required>
-                    <span class="checkmark"></span>
-                    <span class="disclaimer">
-                        I agree to receive communications from WineMembers.AI regarding AI marketing solutions. Message frequency varies. Reply STOP to opt out. <a href="#" target="_blank">Privacy Policy</a> | <a href="#" target="_blank">Terms</a>
-                    </span>
-                </label>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#about">Services</a></li>
+                        <li><a href="#services">Features</a></li>
+                        <li><a href="#stats">Industry Data</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact Us</h3>
+                    <p>Email: hello@winemembers.ai</p>
+                    <p>Phone: (425) 908-0250</p>
+                </div>
             </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="submit-btn" form="chatForm" id="submitBtn">
-                <span class="btn-text">Get My Free Consultation</span>
-                <span class="btn-loading" style="display: none;">Sending...</span>
-            </button>
-
-            <!-- Powered By -->
-            <div class="powered-by">
-                Powered by WineMembers.AI
+            <div class="footer-bottom">
+                <p>&copy; 2024 WineMembersAI. All rights reserved.</p>
             </div>
         </div>
-    </div>
-</div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script 
+        src="https://beta.leadconnectorhq.com/loader.js"  
+        data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js" 
+        data-widget-id="6841e8277322c280cb5b3b14">
+    </script>
+</body>
+</html>
