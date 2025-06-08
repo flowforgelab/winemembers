@@ -121,11 +121,11 @@
             top: 0;
             left: 0;
             width: 0%;
-            height: 8px;
-            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #ff6b6b);
+            height: 5px;
+            background: #ff6b6b;
             z-index: 10001;
-            transition: width 0.1s ease;
-            box-shadow: 0 3px 20px rgba(255, 107, 107, 0.8);
+            transition: width 0.2s ease;
+            box-shadow: 0 2px 10px rgba(255, 107, 107, 0.8);
         }
 
         .container {
@@ -1429,6 +1429,12 @@
             const header = document.querySelector('.header');
             const scrollProgress = document.querySelector('.scroll-progress');
 
+            // Initialize scroll progress
+            if (scrollProgress) {
+                scrollProgress.style.width = '0%';
+                console.log('Scroll progress initialized');
+            }
+
             window.addEventListener('scroll', () => {
                 const currentScroll = window.pageYOffset;
                 
@@ -1442,10 +1448,13 @@
                 }
 
                 // Scroll progress indicator
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                scrollProgress.style.width = scrolled + '%';
+                if (scrollProgress) {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    const scrolled = (winScroll / height) * 100;
+                    scrollProgress.style.width = scrolled + '%';
+                    console.log('Scroll progress:', scrolled + '%');
+                }
 
                 lastScroll = currentScroll;
             });
